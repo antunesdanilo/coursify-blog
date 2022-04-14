@@ -24,28 +24,35 @@ const Home: React.FC<{navigation: any}> = ({navigation}) => {
   const [loading, setLoading] = useStateIfMounted<boolean>(true);
   const [, setForceUpdate] = useStateIfMounted<boolean>(false);
 
+  const getPosts = async (
+    cat: CategoryInterface[],
+  ): Promise<CategoryInterface[]> => {
+    const promises: any[] = [];
+    cat.map((c: any) => {
+      promises.push(
+        postService.listPosts(c.id).then((responsePosts: any) => {
+          c.posts = responsePosts;
+          c.views = c.posts.reduce((prev: any, current: any) => {
+            return prev + (current.page_views || 0);
+          }, 0);
+        }),
+      );
+    });
+    return Promise.all(promises).then(() => {
+      setLoading(false);
+      setForceUpdate(u => !u);
+      return cat;
+    });
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      postService.listCategories().then((responseCategories: any) => {
-        setCategories(responseCategories);
-        setCategories(cat => {
-          const promises: any[] = [];
-          cat.map(c => {
-            promises.push(
-              postService.listPosts(c.id).then((responsePosts: any) => {
-                c.posts = responsePosts;
-                c.views = c.posts.reduce((prev, current) => {
-                  return prev + (current.page_views || 0);
-                }, 0);
-              }),
-            );
-          });
-          Promise.all(promises).then(() => {
-            setLoading(false);
-            setForceUpdate(u => !u);
-          });
-          return cat;
-        });
+      console.log('começou');
+      postService.listCategories().then(async (responseCategories: any) => {
+        console.log('get posts');
+        const cats = await getPosts(responseCategories);
+        console.log('terminou');
+        setCategories(cats);
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),

@@ -14,11 +14,7 @@ const Footer: React.FC = () => {
         <Text style={styles.button}>Quero conhecer a plataforma!</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() =>
-          Linking.openURL(
-            'https://gitlab.com/daniloantunes/desafio-blog-react-native',
-          )
-        }>
+        onPress={() => Linking.openURL('http://www.daniloantunes.dev.br')}>
         <Text style={styles.copyright}>
           Desenvolvido por @DaniloAntunes - 2022 ©
         </Text>
