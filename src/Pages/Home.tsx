@@ -47,11 +47,8 @@ const Home: React.FC<{navigation: any}> = ({navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('começou');
       postService.listCategories().then(async (responseCategories: any) => {
-        console.log('get posts');
         const cats = await getPosts(responseCategories);
-        console.log('terminou');
         setCategories(cats);
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
